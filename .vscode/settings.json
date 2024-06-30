@@ -12,7 +12,15 @@
         "interface/ftdi/esp32_devkitj_v1.cfg",
         "target/esp32.cfg"
     ],
-    "idf.portWin": "COM1",
+    "idf.portWin": "COM3",
     "idf.pythonBinPathWin": "E:/Software/Espressif/python_env/idf5.2_py3.11_env/Scripts/python.exe",
-    "idf.toolsPathWin": "E:\\Software\\Espressif"
+    "idf.toolsPathWin": "E:\\Software\\Espressif",
+    "cmake.configureOnOpen": true,
+    "files.associations": {
+        "gpio.h": "c",
+        "lcd.h": "c",
+        "lvgl.h": "c",
+        "xl9555.h": "c",
+        "led.h": "c"
+    }
 }
