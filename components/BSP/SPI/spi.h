@@ -29,9 +29,9 @@
 
 
 /* 引脚定义 */
-#define SPI_MOSI_GPIO_PIN   GPIO_NUM_11         /* SPI2_MOSI */
+#define SPI_MOSI_GPIO_PIN   GPIO_NUM_11         /* SPI2_MOSI */ //IO_MUX 
 #define SPI_CLK_GPIO_PIN    GPIO_NUM_12         /* SPI2_CLK */
-#define SPI_MISO_GPIO_PIN   GPIO_NUM_13         /* SPI2_MISO */
+#define SPI_MISO_GPIO_PIN   GPIO_NUM_13         /* SPI2_MISO */ //IO_MUX 
 
 /* 函数声明 */
 void spi2_init(void);                                                               /* 初始化SPI2 */

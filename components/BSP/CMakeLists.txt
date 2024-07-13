@@ -2,6 +2,7 @@ set(src_dirs
     LED
     IIC
     LCD
+    ESP_LCD
     SPI
     XL9555)
 
@@ -9,11 +10,13 @@ set(include_dirs
     LED
     IIC
     LCD
+    ESP_LCD
     SPI
     XL9555)
 
 set(requires
-    driver)
+    driver
+    esp_lcd)
 
 idf_component_register(SRC_DIRS ${src_dirs} 
                         INCLUDE_DIRS ${include_dirs}

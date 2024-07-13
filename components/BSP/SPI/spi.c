@@ -37,7 +37,7 @@ void spi2_init(void)
     spi_bus_conf.sclk_io_num = SPI_CLK_GPIO_PIN;                                /* SPI_SCLK引脚 */
     spi_bus_conf.quadwp_io_num = -1;                                            /* SPI写保护信号引脚，该引脚未使能 */
     spi_bus_conf.quadhd_io_num = -1;                                            /* SPI保持信号引脚，该引脚未使能 */
-    spi_bus_conf.max_transfer_sz = 320 * 240 * 2;                               /* 配置最大传输大小，以字节为单位 */
+    spi_bus_conf.max_transfer_sz = 320 * 20 * 2; // SOC_SPI_MAXIMUM_BUFFER_SIZE                             /* 配置最大传输大小，以字节为单位 */
     
     /* 初始化SPI总线 */
     ret = spi_bus_initialize(SPI2_HOST, &spi_bus_conf, SPI_DMA_CH_AUTO);        /* SPI总线初始化 */

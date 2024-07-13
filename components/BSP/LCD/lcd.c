@@ -22,11 +22,14 @@
 
 #define __LCD_VERSION__  "1.0"
 
+
+#include <stdio.h>
+#include "esp_log.h"
 #include "lcd.h"
 #include "lcdfont.h"
+#include "esp_check.h"
 
-
-#define SPI_LCD_TYPE    1           /* SPI接口屏幕类型（1：2.4寸SPILCD  0：1.3寸SPILCD） */  
+#define SPI_LCD_TYPE    0           /* SPI接口屏幕类型（1：2.4寸SPILCD  0：1.3寸SPILCD） */  
 
 spi_device_handle_t MY_LCD_Handle;
 uint8_t lcd_buf[LCD_TOTAL_BUF_SIZE];
@@ -265,14 +268,16 @@ void lcd_display_dir(uint8_t dir)
     if (lcd_self.dir == 0)                  /* 竖屏 */
     {
         lcd_self.width      = 240;
-        lcd_self.height     = 320;
+        //lcd_self.height     = 320;
+        lcd_self.height     = 240;
         lcd_self.wramcmd    = 0X2C;
         lcd_self.setxcmd    = 0X2A;
         lcd_self.setycmd    = 0X2B;
     }
     else                                    /* 横屏 */
     {
-        lcd_self.width      = 320;          /* 默认宽度 */
+        //lcd_self.width      = 320;          /* 默认宽度 */
+        lcd_self.width      = 240;
         lcd_self.height     = 240;          /* 默认高度 */
         lcd_self.wramcmd    = 0X2C;
         lcd_self.setxcmd    = 0X2A;
@@ -729,7 +734,7 @@ void lcd_init(void)
 
     /* SPI驱动接口配置 */
     spi_device_interface_config_t devcfg = {
-        .clock_speed_hz = 60 * 1000 * 1000,                         /* SPI时钟 */
+        .clock_speed_hz = 80 * 1000 * 1000,                         /* SPI时钟 */  //SPI 设备时钟频率
         .mode = 0,                                                  /* SPI模式0 */
         .spics_io_num = lcd_self.cs,                                /* SPI设备引脚 */
         .queue_size = 7,                                            /* 事务队列尺寸 7个 */
