@@ -4,5 +4,16 @@
 # CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.16)
 
+if(NOT DEFINED ENV{IDF_PATH})
+  message(FATAL_ERROR "Environment variable IDF_PATH is not set.")
+endif()
+
+
+
+if(NOT EXISTS "$ENV{IDF_PATH}/tools/cmake/project.cmake")
+  message(FATAL_ERROR "File $ENV{IDF_PATH}/tools/cmake/project.cmake does not exist.")
+endif()
+
+
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(MeowCard)
