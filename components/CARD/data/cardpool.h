@@ -4,8 +4,9 @@
 #endif
 
 /* includes */
-
-
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 /*macros */
 
 #define MAX_CARDS 100
@@ -30,19 +31,20 @@ typedef enum card_level_e
 
 typedef struct card_s
 {
+    bool is_user_card;
+    bool is_fetched_card;
     int card_count;
     int card_id;
     int card_level;
     char* card_name;
     char* card_type;
-    char* card_desc;
-
+    char* card_description;
 } card_t;
 
 typedef struct card_pool_s
 {
     card_t card_pool[MAX_CARDS];
-    char *card_pool_name[POOL_DEEPTH];
+    char *card_pool_name;
 } card_pool_t;
 
 /*用户卡池和总卡池*/
