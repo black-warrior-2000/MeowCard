@@ -18,6 +18,8 @@
 
 /*application*/
 #include "lvgl_demo.h"
+//#include "cardpool.h"
+#include "drawcard.h"
 
 #define DEFAULT_FD_NUM 5
 #define DEFAULT_MOUNT_POINT "/spiffs"
@@ -184,6 +186,9 @@ void app_main(void)
     //lcd_draw_rectangle(0,0,30,30,0xF800);
     vTaskDelay(1000);
     spiffs_test();                                                  /* SPIFFS测试 */
+
+    system_card_pool_init();
+
     ESP_LOGI(TAG, "lcd_draw_rectangle test end...");
     ESP_LOGI(TAG, "LVGL Demo starting...");
     lvgl_demo();

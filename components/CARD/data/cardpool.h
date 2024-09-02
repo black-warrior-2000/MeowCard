@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 /*macros */
 
 #define MAX_CARDS 100
@@ -45,6 +47,7 @@ typedef struct card_pool_s
 {
     card_t card_pool[MAX_CARDS];
     char *card_pool_name;
+    uint64_t card_count;
 } card_pool_t;
 
 /*用户卡池和总卡池*/
@@ -52,7 +55,9 @@ typedef struct card_pool_s
 
 /*internal function prototypes */
 
-void card_pool_init(void);
+static void card_pool_init(void);
 
 
 /*external function prototypes */
+
+void system_card_pool_init(void);
