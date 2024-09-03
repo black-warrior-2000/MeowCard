@@ -1,10 +1,12 @@
 #include "cardpool.h"
-
+#include "esp_log.h"
 
 card_pool_t system_card_pool={};
 card_pool_t user_card_pool={};
 
+//#define CARD_PRECONFIG_FILE_NAME "cardpool.config"
 
+static const char * CARDPOOL = "cardpool";
 void system_card_pool_init(void)
 {
     /*读取flash卡池数据*/
@@ -17,15 +19,24 @@ void system_card_pool_init(void)
     }
     /*如果有config 文件就读取config 文件的卡片数据*/
     
+
+#ifdef CONFIG_CARDPOOL_PRECONFIG
+    ESP_LOGI(CARDPOOL,"cardpool preconfig");
+
+#else
+    ESP_LOGI(CARDPOOL,"cardpool no preconfig");
     /*测试数据  硬写入一组卡片*/
     system_card_pool.card_pool[0].card_id = 0;
     system_card_pool.card_pool[0].card_name="bubu";
-    system_card_pool.card_pool[0].card_type="CN",
-    system_card_pool.card_pool[0].card_level=LEVEL_5,
-    system_card_pool.card_pool[0].card_description="block yang's cat",
-    system_card_pool.card_pool[0].is_fetched_card=false,
+    system_card_pool.card_pool[0].card_type="CN";
+    system_card_pool.card_pool[0].card_level=LEVEL_5;
+    system_card_pool.card_pool[0].card_description="block yang's cat";
+    system_card_pool.card_pool[0].is_fetched_card=false;
     system_card_pool.card_pool[0].is_user_card=false;
-    
+    system_card_pool.card_count++;
+    ESP_LOGI(CARDPOOL,"cardpool add card %d",system_card_pool.card_pool[0].card_id);
+    ESP_LOGI(CARDPOOL,"cardpool add card count %d",system_card_pool.card_count);
+#endif
 
 
 }
@@ -33,8 +44,9 @@ void system_card_pool_init(void)
 void system_list_out_pool_card(void)
 {
     /*检查系统卡池是否为空*/
-    if(system_card_pool.card_count == 0){
+    if (system_card_pool.card_count == 0){
         /*log error*/
+        ESP_LOGE(CARDPOOL,"cardpool is empty");
         return;
     }
     /*遍历卡组并打印卡牌*/
@@ -42,9 +54,17 @@ void system_list_out_pool_card(void)
     {
         if(system_card_pool.card_pool[i].card_name!=NULL) {
             /*log info*/
+            ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %s %d %d",system_card_pool.card_pool[i].card_id,
+                                            system_card_pool.card_pool[i].card_name,
+                                            system_card_pool.card_pool[i].card_type,
+                                            system_card_pool.card_pool[i].card_level,
+                                            system_card_pool.card_pool[i].card_description,
+                                            system_card_pool.card_pool[i].is_fetched_card,
+                                            system_card_pool.card_pool[i].is_user_card);
         }
         else {
             /*log error*/
+            ESP_LOGE(CARDPOOL,"cardpool card %d is empty",i);
             break;
         }
     }
