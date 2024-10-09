@@ -61,3 +61,7 @@ static void card_pool_init(void);
 /*external function prototypes */
 
 void system_card_pool_init(void);
+void system_list_out_pool_card(void);
+void system_list_out_pool_card_non_stop(void);
+card_t* find_card(card_pool_t* pool, int card_id);
+bool update_card(card_pool_t* pool, int card_id, card_t* new_card);

@@ -1,6 +1,9 @@
 #include "cardpool.h"
 #include "esp_log.h"
-
+/*freertos*/
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/timers.h"
 card_pool_t system_card_pool={};
 card_pool_t user_card_pool={};
 
@@ -16,6 +19,12 @@ void system_card_pool_init(void)
         system_card_pool.card_pool[i].is_user_card=false;
         system_card_pool.card_pool[i].is_fetched_card=false;
         system_card_pool.card_pool[i].card_id=i;
+        system_card_pool.card_pool[i].card_count=0;
+        system_card_pool.card_pool[i].card_level=LEVEL_1;
+        system_card_pool.card_pool[i].card_name="TEST";
+        system_card_pool.card_pool[i].card_type="TEST";
+        system_card_pool.card_pool[i].card_description="TEST";
+
     }
     /*如果有config 文件就读取config 文件的卡片数据*/
     
@@ -34,8 +43,8 @@ void system_card_pool_init(void)
     system_card_pool.card_pool[0].is_fetched_card=false;
     system_card_pool.card_pool[0].is_user_card=false;
     system_card_pool.card_count++;
-    ESP_LOGI(CARDPOOL,"cardpool add card %d",system_card_pool.card_pool[0].card_id);
-    ESP_LOGI(CARDPOOL,"cardpool add card count %d",system_card_pool.card_count);
+    ESP_LOGI(CARDPOOL,"cardpool add card %lu",system_card_pool.card_pool[0].card_id);
+    ESP_LOGI(CARDPOOL,"cardpool add card count %lu",system_card_pool.card_count);
 #endif
 
 
@@ -43,18 +52,29 @@ void system_card_pool_init(void)
 
 void system_list_out_pool_card(void)
 {
+    ESP_LOGI(CARDPOOL,"enter system_list_out_pool_card");
     /*检查系统卡池是否为空*/
     if (system_card_pool.card_count == 0){
         /*log error*/
         ESP_LOGE(CARDPOOL,"cardpool is empty");
         return;
     }
+
+    ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %d %d ",system_card_pool.card_pool[0].card_id,
+                                            system_card_pool.card_pool[0].card_name,
+                                            system_card_pool.card_pool[0].card_type,
+                                            system_card_pool.card_pool[0].card_level,
+                                            system_card_pool.card_pool[0].card_description,
+                                            system_card_pool.card_pool[0].is_fetched_card,
+                                            system_card_pool.card_pool[0].is_user_card
+                                            );
     /*遍历卡组并打印卡牌*/
     for(int i=0;i<MAX_CARDS;i++)
     {
-        if(system_card_pool.card_pool[i].card_name!=NULL) {
+        
+        if(strcmp(system_card_pool.card_pool[i].card_name,"TEST")!=0) {
             /*log info*/
-            ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %s %d %d",system_card_pool.card_pool[i].card_id,
+            ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %d %d",system_card_pool.card_pool[i].card_id,
                                             system_card_pool.card_pool[i].card_name,
                                             system_card_pool.card_pool[i].card_type,
                                             system_card_pool.card_pool[i].card_level,
@@ -71,15 +91,86 @@ void system_list_out_pool_card(void)
 
 }
 
+
+void user_list_out_pool_card(void)
+{
+    ESP_LOGI(CARDPOOL,"enter system_list_out_pool_card");
+    /*检查系统卡池是否为空*/
+    if (system_card_pool.card_count == 0){
+        /*log error*/
+        ESP_LOGE(CARDPOOL,"cardpool is empty");
+        return;
+    }
+
+    ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %d %d ",system_card_pool.card_pool[0].card_id,
+                                            system_card_pool.card_pool[0].card_name,
+                                            system_card_pool.card_pool[0].card_type,
+                                            system_card_pool.card_pool[0].card_level,
+                                            system_card_pool.card_pool[0].card_description,
+                                            system_card_pool.card_pool[0].is_fetched_card,
+                                            system_card_pool.card_pool[0].is_user_card
+                                            );
+    /*遍历卡组并打印卡牌*/
+    for(int i=0;i<MAX_CARDS;i++)
+    {
+        
+        if(strcmp(system_card_pool.card_pool[i].card_name,"TEST")!=0) {
+            /*log info*/
+            ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %d %d",system_card_pool.card_pool[i].card_id,
+                                            system_card_pool.card_pool[i].card_name,
+                                            system_card_pool.card_pool[i].card_type,
+                                            system_card_pool.card_pool[i].card_level,
+                                            system_card_pool.card_pool[i].card_description,
+                                            system_card_pool.card_pool[i].is_fetched_card,
+                                            system_card_pool.card_pool[i].is_user_card);
+        }
+        else {
+            /*log error*/
+            ESP_LOGE(CARDPOOL,"cardpool card %d is empty",i);
+            break;
+        }
+    }
+
+}
+
+void system_list_out_pool_card_non_stop(void)
+{
+    ESP_LOGI(CARDPOOL,"enter system_list_out_pool_card_non_stop");
+    /*检查系统卡池是否为空*/
+    if (system_card_pool.card_count == 0){
+        /*log error*/
+        ESP_LOGE(CARDPOOL,"cardpool is empty");
+        return;
+    }
+
+    /*遍历卡组并打印卡牌*/
+    for(int i=0;i<MAX_CARDS;i++)
+    {
+        /*log info*/
+        ESP_LOGI(CARDPOOL,"cardpool card %d %s %s %d %s %d %d",system_card_pool.card_pool[i].card_id,
+                                        system_card_pool.card_pool[i].card_name,
+                                        system_card_pool.card_pool[i].card_type,
+                                        system_card_pool.card_pool[i].card_level,
+                                        system_card_pool.card_pool[i].card_description,
+                                        system_card_pool.card_pool[i].is_fetched_card,
+                                        system_card_pool.card_pool[i].is_user_card);
+        vTaskDelay(50);
+    }
+
+}
+
 bool add_card(card_pool_t* pool, card_t* card) {
+    ESP_LOGI(CARDPOOL,"enter add_card");
     /*检查卡池是否为空*/
     if (pool == NULL || card == NULL) {
         /*log error*/
+        ESP_LOGE(CARDPOOL,"[ADD]cardpool is NULL");
         return false;
     }
     /*检查卡池是否为用户卡池*/
     if (strcmp(pool->card_pool_name,"user_card_pool") == 0) {
         /*找出卡池中空闲的位置*/
+        ESP_LOGI(CARDPOOL,"[ADD]cardpool is user_card_pool");
         /*遍历卡组*/
         for (int i=0; i < MAX_CARDS; i++){
             if(pool->card_pool[i].card_name == NULL ) {
@@ -98,6 +189,7 @@ bool add_card(card_pool_t* pool, card_t* card) {
 
 // 删除卡片
 bool remove_card(card_pool_t* pool, int card_id) {
+    ESP_LOGI(CARDPOOL,"enter remove_card");
     /*检查card_id对应的卡是否是空*/
     /*检查卡池合法性*/
     int id = card_id - 1;
@@ -121,18 +213,28 @@ bool remove_card(card_pool_t* pool, int card_id) {
 
 // 查找卡片
 card_t* find_card(card_pool_t* pool, int card_id) {
+    ESP_LOGI(CARDPOOL,"enter find_card");
     int id = card_id - 1;
+    ESP_LOGI(CARDPOOL,"check id: %d",id);
     /*检查card_id对应的卡是否是空*/
     if (pool == NULL || (id) < 0 || (id) >= MAX_CARDS) {
         /*log error*/
+        ESP_LOGE(CARDPOOL,"the card pool is empty");
         return NULL;
     }
     if (pool->card_pool[id].card_name == NULL) {
         /*log error*/
+        ESP_LOGE(CARDPOOL,"the card is empty");
         return NULL;
     }
     /*打印卡牌信息*/
     /*log info*/
+    ESP_LOGI(CARDPOOL,"find : cardpool card %d %s %s %d %s",pool->card_pool[id].card_id,
+                                        pool->card_pool[id].card_name,
+                                        pool->card_pool[id].card_type,
+                                        pool->card_pool[id].card_level,
+                                        pool->card_pool[id].card_description
+    );
     return &pool->card_pool[id];
 
 }

@@ -8,13 +8,6 @@
 //#define TIME_RANDOM 1
 #define ESP_RANDOM 1
 
-typedef struct weight_of_card
-{
-    /* data */
-    uint32_t  card_level;
-    uint32_t  card_level_weight;
-} weight_of_card_t;
-
 
 weight_of_card_t normal_weight[5] = {
     {1,5},
@@ -24,15 +17,16 @@ weight_of_card_t normal_weight[5] = {
     {5,50}
 };
 
+
 static const char * DRAWCARD = "draw_card";
 
-int32_t draw_card(weight_of_card_t * weight, int len);
 
-int32_t draw_card(weight_of_card_t * weight, int len){
+
+uint32_t draw_card(weight_of_card_t * weight, int len){
     /*获取随机数*/
     uint32_t random_num = 0;
     uint32_t range = MAX_CARDS - MIN_CARDS + 1;
-    ESP_LOGV(DRAWCARD, "[initial] random_num = %d,range = %d ", random_num, range);
+    ESP_LOGV(DRAWCARD, "[initial] random_num = %lu,range = %lu ", random_num, range);
     /*检查weight 指针合法性*/
     if(weight == NULL)
     {
@@ -72,11 +66,11 @@ int32_t draw_card(weight_of_card_t * weight, int len){
 #ifdef ESP_RANDOM
     do {
         random_num = esp_random();
-        ESP_LOGI(DRAWCARD, "[rolling] random_num = %d ", random_num);
+        ESP_LOGI(DRAWCARD, "[rolling] random_num = %lu ", random_num);
     } while (random_num >= UINT32_MAX - ( UINT32_MAX % range ));
-    ESP_LOGI(DRAWCARD, "[rolled] random_num = %d ", random_num);
+    ESP_LOGI(DRAWCARD, "[rolled] random_num = %lu ", random_num);
     random_num = random_num % range + MIN_CARDS;
-    ESP_LOGI(DRAWCARD, "[final] random_num = %d ", random_num);
+    ESP_LOGI(DRAWCARD, "[final] random_num = %lu ", random_num);
 #endif
 
     /*查找对应卡牌*/

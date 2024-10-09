@@ -3,6 +3,7 @@ set(src_dirs
     IIC
     LCD
     ESP_LCD
+    EXIT
     SPI
     XL9555)
 
@@ -11,6 +12,7 @@ set(include_dirs
     IIC
     LCD
     ESP_LCD
+    EXIT
     SPI
     XL9555)
 

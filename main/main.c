@@ -15,6 +15,7 @@
 #include "led.h"
 #include "xl9555.h"
 #include "esp_lcd.h"
+#include "exit.h"
 
 /*application*/
 #include "lvgl_demo.h"
@@ -38,7 +39,10 @@
 i2c_obj_t i2c0_master;
 static const char *TAG = "LVGL_DEMO";
 static const char *FFS_TAG = "spiffs";
-
+extern weight_of_card_t normal_weight[5];
+extern card_pool_t system_card_pool;
+extern card_pool_t user_card_pool;
+uint32_t test_random_array[1000]={0};
 
 esp_err_t spiffs_init(char *partition_label,char *mount_point,size_t max_files)
 {
@@ -152,6 +156,8 @@ void spiffs_test(void)
 //the main function
 void app_main(void)
 {
+    uint32_t test_random_num=120;
+    card_t temp_card;
     /*esp system init*/
     esp_err_t ret;
     ret = nvs_flash_init();
@@ -162,6 +168,10 @@ void app_main(void)
     //esp_log_level_set("*", ESP_LOG_INFO); // 设置所有组件的日志级别为INFO
     /*Led init*/
     led_init();
+
+    /*exit init*/
+    //exit_init(); // do it in init(lvgl_demo)
+    
     // /*i2c init*/
     i2c0_master = iic_init(I2C_NUM_0); 
     // /*lcd init*/
@@ -185,10 +195,37 @@ void app_main(void)
     //lcd_show_string(10, 40, 240, 32, 32, "MeowCard", RED);
     //lcd_draw_rectangle(0,0,30,30,0xF800);
     vTaskDelay(1000);
-    spiffs_test();                                                  /* SPIFFS测试 */
+   // spiffs_test();                                                  /* SPIFFS测试 */
 
     system_card_pool_init();
+    
+    system_list_out_pool_card();
+    //system_list_out_pool_card_non_stop();
 
+    /* 测试随机数生成器 */
+    /*
+    for(int i=0;i<100;i++){
+        test_random_num=draw_card(normal_weight,1);
+        ESP_LOGI(TAG, "draw_card test end,result:%u",(unsigned int)test_random_num);
+        test_random_array[i] = test_random_num;
+        vTaskDelay(50);
+    }
+    */
+    /*
+    for(int i=0;i<100;i++){
+        ESP_LOGI(TAG, "test_random_array[%d]:%lu",i,test_random_array[i]);
+        vTaskDelay(10);
+    }
+    */
+    test_random_num=draw_card(normal_weight,1);
+    find_card(&system_card_pool,test_random_num);
+    /*
+    temp_card = system_card_pool.card_list[test_random_num];
+    for(i=0;i<7;i++) {
+        temp_card.card_id
+    }
+    update_card(&user_card_pool,test_random_num,temp_card);
+    */
     ESP_LOGI(TAG, "lcd_draw_rectangle test end...");
     ESP_LOGI(TAG, "LVGL Demo starting...");
     lvgl_demo();

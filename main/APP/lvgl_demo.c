@@ -1,5 +1,6 @@
 #include "lvgl_demo.h"
 #include "lcd.h" //include "spi.h"
+#include "exit.h"
 #include "xl9555.h"
 #include "esp_timer.h"
 #include "lvgl.h"
@@ -10,8 +11,13 @@
 
 #define CONFIG_ZD_DISP_INIT
 
+#define CONFIG_USE_EXIT_IO
+
 static const char *TEST_TAG = "LVGL_DEMO";
 static const char *KEY_TAG = "last_key";
+
+extern bool key_btn_flag;
+bool key_btn_last_flag = 0;
 //extern lcd_obj_t lcd_self;  //inside "lcd.h"
 static void increase_lvgl_tick(void *arg)
 {
@@ -51,6 +57,19 @@ uint32_t key_pressed(void){
     return xl9555_key_scan(1);
 }
 
+bool btn_key_pressed(void){
+    
+    if (key_btn_flag){
+        ESP_LOGI(KEY_TAG,"btn_key_pressed... : %d",key_btn_flag);
+        key_btn_flag = 0;
+        return 1;
+    } 
+    else{
+        return 0;
+    }
+    
+}
+
 void encoder_with_keys_read(lv_indev_t * indev, lv_indev_data_t*data){
 
   data->key = last_key();            /*Get the last pressed or released key*/
@@ -65,7 +84,22 @@ void encoder_with_keys_read(lv_indev_t * indev, lv_indev_data_t*data){
   }
 }
 
+#ifdef CONFIG_USE_EXIT_IO
 
+
+void button_with_keys_read(lv_indev_t * indev, lv_indev_data_t*data) {
+    
+    data->btn_id = 1;
+    if(btn_key_pressed()) {
+        ESP_LOGI(KEY_TAG,"btn_key_pressed... state:PRESSED");
+        data->state = LV_INDEV_STATE_PRESSED;
+    }
+    else {
+        data->state = LV_INDEV_STATE_RELEASED;
+    }
+}
+
+#endif
 
 
 
@@ -266,18 +300,31 @@ void lv_port_indev_init(){
     lv_indev_set_type(indev, LV_INDEV_TYPE_...);   
     lv_indev_set_read_cb(indev, read_cb);  
     */
+#ifdef CONFIG_USE_EXIT_IO
 
-    //key_init();
+    exit_init();
+#endif
     static lv_indev_drv_t indev_drv;
     lv_indev_drv_init(&indev_drv);
 
-    indev_drv.type = LV_INDEV_TYPE_ENCODER;
+#ifdef CONFIG_USE_EXIT_IO
 
-    indev_drv.read_cb = encoder_with_keys_read;
+    indev_drv.type = LV_INDEV_TYPE_BUTTON;
+
+    indev_drv.read_cb = button_with_keys_read;
+    
+    lv_indev_t *indev_button;
+    indev_button = lv_indev_drv_register(&indev_drv);
+#else
+    //indev_drv.type = LV_INDEV_TYPE_POINTER;
+    //indev_drv.read_cb = touchpad_read;
+    //lv_indev_t *indev_encoder;
+    //indev_encoder = lv_indev_drv_register(&indev_drv);
+#endif
 
 
-    lv_indev_t *indev_encoder;
-    indev_encoder = lv_indev_drv_register(&indev_drv);
+
+
 }
 
 void lvgl_demo(void){
