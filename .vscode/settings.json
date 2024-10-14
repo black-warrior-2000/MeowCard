@@ -29,6 +29,13 @@
         "stdlib.h": "c",
         "esp_heap_caps.h": "c",
         "esp_lcd_panel_ops.h": "c",
-        "esp_lcd.h": "c"
+        "esp_lcd.h": "c",
+        "cardpool.h": "c",
+        "esp_log.h": "c",
+        "exit.h": "c",
+        "gui_guider.h": "c",
+        "events_init.h": "c",
+        "lv_examples.h": "c",
+        "lvgl_demo.h": "c"
     }
 }
