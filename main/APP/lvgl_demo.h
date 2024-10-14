@@ -8,6 +8,8 @@
 
 /*demo*/
 void lvgl_demo(void);
+void lvgl_demo_part_a(void);
+void lvgl_demo_part_b(void);
 
 /*initial & register display device*/
 void lvgl_port_disp_init(void);

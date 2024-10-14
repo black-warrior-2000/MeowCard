@@ -8,6 +8,8 @@
 #include "examples/lv_examples.h"
 #include "esp_log.h"
 #include "esp_lcd.h"
+#include "gui_guider.h"
+#include "events_init.h"
 
 #define CONFIG_ZD_DISP_INIT
 
@@ -18,6 +20,9 @@ static const char *KEY_TAG = "last_key";
 
 extern bool key_btn_flag;
 bool key_btn_last_flag = 0;
+
+lv_ui guider_ui;
+
 //extern lcd_obj_t lcd_self;  //inside "lcd.h"
 static void increase_lvgl_tick(void *arg)
 {
@@ -345,11 +350,15 @@ void lvgl_demo(void){
 
     /* 官方demo,需要在SDK Configuration中开启对应Demo */
     //lv_demo_music();      
-    lv_demo_benchmark();
+    //lv_demo_benchmark();
     //lv_demo_widgets();
     // lv_demo_stress();
     //lv_demo_keypad_encoder();
     //lv_example_btn_1();
+
+    setup_ui(&guider_ui);
+    events_init(&guider_ui);
+    
     while (1)
     {
         lv_timer_handler();             /* LVGL计时器 */
@@ -358,3 +367,43 @@ void lvgl_demo(void){
 
 }
 
+
+void lvgl_demo_part_a(void){
+    /* Initialize LVGL */
+    lv_init();
+    lv_port_disp_init();
+    lv_port_indev_init();
+
+    const esp_timer_create_args_t lvgl_tick_timer_args = {
+        .callback = &increase_lvgl_tick,
+        .name = "lvgl_tick"
+    };
+
+    esp_timer_handle_t lvgl_tick_timer = NULL;
+    ESP_ERROR_CHECK(esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer));
+    ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, 1 * 1000));
+
+
+    /* 官方demo,需要在SDK Configuration中开启对应Demo */
+    //lv_demo_music();      
+    //lv_demo_benchmark();
+    //lv_demo_widgets();
+    // lv_demo_stress();
+    //lv_demo_keypad_encoder();
+    //lv_example_btn_1();
+
+    //setup_ui(&lvgl_by_ui);
+    //events_init(&lvgl_by_ui);
+    
+
+}
+
+void lvgl_demo_part_b(void){
+
+    while (1)
+    {
+        lv_timer_handler();             /* LVGL计时器 */
+        vTaskDelay(pdMS_TO_TICKS(10));  /* 延时10毫秒 */
+    }
+
+}

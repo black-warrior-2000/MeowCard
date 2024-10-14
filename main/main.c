@@ -17,6 +17,8 @@
 #include "esp_lcd.h"
 #include "exit.h"
 
+
+
 /*application*/
 #include "lvgl_demo.h"
 //#include "cardpool.h"
@@ -43,7 +45,6 @@ extern weight_of_card_t normal_weight[5];
 extern card_pool_t system_card_pool;
 extern card_pool_t user_card_pool;
 uint32_t test_random_array[1000]={0};
-
 esp_err_t spiffs_init(char *partition_label,char *mount_point,size_t max_files)
 {
  /* 配置 spiffs 文件系统各个参数 */
@@ -229,4 +230,5 @@ void app_main(void)
     ESP_LOGI(TAG, "lcd_draw_rectangle test end...");
     ESP_LOGI(TAG, "LVGL Demo starting...");
     lvgl_demo();
+
 }
