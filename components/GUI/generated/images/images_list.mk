@@ -1,0 +1,1 @@
+GEN_CSRCS += _image2_240x240.c _image6_240x240.c

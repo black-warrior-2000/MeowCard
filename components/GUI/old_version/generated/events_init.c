@@ -7,26 +7,17 @@
 * terms, then you may not retain, install, activate or otherwise use the software.
 */
 
+#include "events_init.h"
+#include <stdio.h>
+#include "lvgl.h"
 
-#ifndef EVENTS_INIT_H_
-#define EVENTS_INIT_H_
-#ifdef __cplusplus
-extern "C" {
+#if LV_USE_GUIDER_SIMULATOR && LV_USE_FREEMASTER
+#include "freemaster_client.h"
 #endif
 
-#include "gui_guider.h"
 
-void events_init(lv_ui *ui);
 
-void events_init_screen(lv_ui *ui);
-void events_init_screen_1(lv_ui *ui);
-void events_init_screen_2(lv_ui *ui);
-void events_init_screen_3(lv_ui *ui);
-void events_init_screen_4(lv_ui *ui);
-void events_init_screen_5(lv_ui *ui);
-void events_init_screen_6(lv_ui *ui);
+void events_init(lv_ui *ui)
+{
 
-#ifdef __cplusplus
 }
-#endif
-#endif /* EVENT_CB_H_ */

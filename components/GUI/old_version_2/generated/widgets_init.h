@@ -7,26 +7,24 @@
 * terms, then you may not retain, install, activate or otherwise use the software.
 */
 
-
-#ifndef EVENTS_INIT_H_
-#define EVENTS_INIT_H_
+#ifndef WIDGET_INIT_H
+#define WIDGET_INIT_H
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include "lvgl.h"
 #include "gui_guider.h"
 
-void events_init(lv_ui *ui);
+__attribute__((unused)) void kb_event_cb(lv_event_t *e);
+__attribute__((unused)) void ta_event_cb(lv_event_t *e);
+#if LV_USE_ANALOGCLOCK != 0
+void clock_count(int *hour, int *min, int *sec);
+#endif
 
-void events_init_screen(lv_ui *ui);
-void events_init_screen_1(lv_ui *ui);
-void events_init_screen_2(lv_ui *ui);
-void events_init_screen_3(lv_ui *ui);
-void events_init_screen_4(lv_ui *ui);
-void events_init_screen_5(lv_ui *ui);
-void events_init_screen_6(lv_ui *ui);
+
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* EVENT_CB_H_ */
+#endif
