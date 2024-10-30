@@ -53,7 +53,7 @@ void esp_lcd_init(esp_lcd_panel_io_handle_t *by_io_handle,
     
     esp_lcd_panel_dev_config_t panel_config = {
         .reset_gpio_num = -1,
-        .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_BGR,
+        .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,//very important
         .bits_per_pixel = 16,
     };
 
